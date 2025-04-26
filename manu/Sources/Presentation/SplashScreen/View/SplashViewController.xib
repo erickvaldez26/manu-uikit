@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SplashViewController" customModule="manu" customModuleProvider="target">
+            <connections>
+                <outlet property="resourceAppImage" destination="TZd-4N-3tM" id="9DO-yH-RE5"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="resource_app_icon" translatesAutoresizingMaskIntoConstraints="NO" id="TZd-4N-3tM">
+                    <rect key="frame" x="156.66666666666666" y="386" width="80" height="80"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="80" id="dfb-p5-QQX"/>
+                        <constraint firstAttribute="height" constant="80" id="j7a-ZR-k8h"/>
+                    </constraints>
+                </imageView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" name="accentGray"/>
+            <constraints>
+                <constraint firstItem="TZd-4N-3tM" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="RdH-dn-498"/>
+                <constraint firstItem="TZd-4N-3tM" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="xP8-J6-39N"/>
+            </constraints>
+            <point key="canvasLocation" x="178" y="-15"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="resource_app_icon" width="512" height="512"/>
+        <namedColor name="accentGray">
+            <color red="0.1289999932050705" green="0.1289999932050705" blue="0.1289999932050705" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+    </resources>
+</document>
