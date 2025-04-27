@@ -27,6 +27,7 @@ class SplashViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         viewModel.onViewDidLoad()
+        redirectAfterSplash()
     }
     
     private func setupUI() {

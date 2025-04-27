@@ -1,18 +1,17 @@
 //
-//  SplashCoordinator.swift
+//  AuthenticationCoordinator.swift
 //  manu
 //
-//  Created by Erick Valdez on 25/04/25.
+//  Created by Erick Valdez on 26/04/25.
 //
 
 import UIKit
 
-protocol SplashCoordinatorProtocol: AnyObject {
-    func goToAuthentication()
-    func goToHome()
+protocol AuthenticationCoordinatorProtocol: AnyObject {
+    func goToRegister()
 }
 
-final class SplashCoordinator: Coordinator, SplashCoordinatorProtocol {
+final class AuthenticationCoordinator: Coordinator, AuthenticationCoordinatorProtocol {
     var navigationController: UINavigationController
     private unowned let parentCoordinator: AppCoordinator
     
@@ -22,15 +21,11 @@ final class SplashCoordinator: Coordinator, SplashCoordinatorProtocol {
     }
     
     func start() {
-        let viewController = SplashScreenFactory.createViewController(coordinator: self)
+        let viewController = LoginScreenFactory.createViewController(coordinator: self)
         navigationController.setViewControllers([viewController], animated: false)
     }
     
-    func goToAuthentication() {
-        parentCoordinator.goToAuthentication()
-    }
-    
-    func goToHome() {
-        print("APP ->", "Go to Home")
+    func goToRegister() {
+        print("APP ->", "Go to register")
     }
 }
