@@ -50,7 +50,7 @@ class MNInput: UIView {
         textField.borderStyle = .none
         textField.tintColor = UIColor(named: "accentLightGray")
         textField.textColor = .black
-        textField.font = UIFont.systemFont(ofSize: 12)
+        textField.font = UIFont.montserratRegular(12)
         textField.addTarget(self, action: #selector(editingDidBegin), for: .editingDidBegin)
         textField.addTarget(self, action: #selector(editingDidEnd), for: .editingDidEnd)
         
@@ -71,7 +71,7 @@ class MNInput: UIView {
             string: placeholder,
             attributes: [
                 .foregroundColor: UIColor(named: "onSurface"),
-                .font: UIFont.systemFont(ofSize: 12)
+                .font: UIFont.montserratRegular(12)
             ]
         )
     }

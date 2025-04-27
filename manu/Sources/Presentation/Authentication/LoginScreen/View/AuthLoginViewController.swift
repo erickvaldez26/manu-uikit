@@ -45,18 +45,18 @@ class AuthLoginViewController: UIViewController {
     private func setupUI() {
         appImage.layer.cornerRadius = 6
         let appName: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 20),
+            .font: UIFont.montserratBold(16),
             .foregroundColor: UIColor.black
         ]
         let appVersion: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 10),
+            .font: UIFont.montserratRegular(10),
             .foregroundColor: UIColor.black
         ]
         let attributedText = NSMutableAttributedString(string: "Manu ", attributes: appName)
         attributedText.append(NSAttributedString(string: "v\(Utils.getAppVersion())", attributes: appVersion))
         topTagLabel.attributedText = attributedText
         
-        bannerTitleLabel.font = UIFont.boldSystemFont(ofSize: 22)
+        bannerTitleLabel.font = .montserratRegular(20)
         bannerTitleLabel.textColor = UIColor.black
         bannerTitleLabel.numberOfLines = .zero
         bannerTitleLabel.textAlignment = .center
@@ -81,7 +81,7 @@ class AuthLoginViewController: UIViewController {
         enterButton.setCustomTitle("Ingresar")
         enterButton.setState(.disabled)
         
-        infoRegisterLabel.font = UIFont.systemFont(ofSize: 12)
+        infoRegisterLabel.font = .montserratRegular(12)
         infoRegisterLabel.textColor = .black
         infoRegisterLabel.text = "Aún no te registraste? Regístrate aqui"
     }

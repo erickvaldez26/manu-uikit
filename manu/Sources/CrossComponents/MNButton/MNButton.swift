@@ -33,7 +33,7 @@ final class MNButton: UIButton {
         heightAnchor.constraint(equalToConstant: 45).isActive = true
         
         layer.cornerRadius = 10.0
-        titleLabel?.font = UIFont.systemFont(ofSize: 13)
+        titleLabel?.font = UIFont.montserratRegular(12)
         
         activityIndicator.color = .white
         activityIndicator.hidesWhenStopped = true
