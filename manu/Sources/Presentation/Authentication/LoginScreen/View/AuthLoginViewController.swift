@@ -52,7 +52,7 @@ class AuthLoginViewController: UIViewController {
             .font: UIFont.montserratRegular(10),
             .foregroundColor: UIColor.black
         ]
-        let attributedText = NSMutableAttributedString(string: "Manu ", attributes: appName)
+        let attributedText = NSMutableAttributedString(string: Constants.Localized.appName.apply(), attributes: appName)
         attributedText.append(NSAttributedString(string: "v\(Utils.getAppVersion())", attributes: appVersion))
         topTagLabel.attributedText = attributedText
         
@@ -60,14 +60,14 @@ class AuthLoginViewController: UIViewController {
         bannerTitleLabel.textColor = UIColor.black
         bannerTitleLabel.numberOfLines = .zero
         bannerTitleLabel.textAlignment = .center
-        bannerTitleLabel.text = "Controla tus gastos,\ncontrola tu vida"
+        bannerTitleLabel.text = Constants.Localized.titleLoginScreen.apply()
         
-        emailTextField.setPlaceholder("Correo electrónico")
-        passwordTextField.setPlaceholder("Contraseña")
+        emailTextField.setPlaceholder(Constants.Localized.email.apply())
+        passwordTextField.setPlaceholder(Constants.Localized.password.apply())
         passwordTextField.isSecureEntry = true
         
         var config = UIButton.Configuration.plain()
-        config.image = UIImage(systemName: "faceid")
+        config.image = UIImage(systemName: Constants.IconsName.faceId)
         config.contentInsets = .zero
         enrollFaceIdButton.configuration = config
         enrollFaceIdButton.imageView?.contentMode = .scaleAspectFill
@@ -78,12 +78,12 @@ class AuthLoginViewController: UIViewController {
             enrollFaceIdButton.imageView!.heightAnchor.constraint(equalTo: enrollFaceIdButton.heightAnchor)
         ])
         
-        enterButton.setCustomTitle("Ingresar")
+        enterButton.setCustomTitle(Constants.Localized.join.apply())
         enterButton.setState(.disabled)
         
         infoRegisterLabel.font = .montserratRegular(12)
         infoRegisterLabel.textColor = .black
-        infoRegisterLabel.text = "Aún no te registraste? Regístrate aqui"
+        infoRegisterLabel.text = "\(Constants.Localized.haveDontRegistered.apply()) \(Constants.Localized.registerHere.apply())"
     }
 
     @objc private func keyboardWillShow(notification: Notification) {
