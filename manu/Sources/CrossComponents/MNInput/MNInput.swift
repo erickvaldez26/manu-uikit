@@ -8,7 +8,7 @@
 import UIKit
 
 class MNInput: UIView {
-    private let textField = UITextField()
+    public let textField = UITextField()
     private let borderColorNormal = UIColor(named: "onSurface")?.cgColor
     private let borderColorFocused = UIColor(named: "accentLightGray")?.cgColor
     private let fixedHeight: CGFloat = 45
