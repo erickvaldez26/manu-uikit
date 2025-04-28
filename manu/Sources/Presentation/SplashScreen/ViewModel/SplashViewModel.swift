@@ -12,7 +12,6 @@ protocol SplashViewModelProtocol {
 }
 
 final class SplashViewModel: SplashViewModelProtocol {
-    
     func onViewDidLoad() {
         print("APP ->", "ViewModel did load")
     }

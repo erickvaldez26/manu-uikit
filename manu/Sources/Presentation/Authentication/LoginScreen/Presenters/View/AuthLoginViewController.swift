@@ -6,8 +6,13 @@
 //
 
 import UIKit
+import Combine
 
 class AuthLoginViewController: UIViewController {
+    
+    private let viewModel: AuthLoginViewModel
+    private let coordinator: AuthenticationCoordinatorProtocol
+    private var cancellables = Set<AnyCancellable>()
 
     @IBOutlet weak var appImage: UIImageView!
     @IBOutlet weak var topTagLabel: UILabel!
@@ -18,7 +23,9 @@ class AuthLoginViewController: UIViewController {
     @IBOutlet weak var enterButton: MNButton!
     @IBOutlet weak var infoRegisterLabel: UILabel!
     
-    init() {
+    init(viewModel: AuthLoginViewModel, coordinator: AuthenticationCoordinatorProtocol) {
+        self.viewModel = viewModel
+        self.coordinator = coordinator
         super.init(nibName: String(describing: AuthLoginViewController.self), bundle: nil)
     }
     
@@ -30,6 +37,7 @@ class AuthLoginViewController: UIViewController {
         super.viewDidLoad()
         setupNotificationCenter()
         setupUI()
+        setupBindings()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -43,6 +51,10 @@ class AuthLoginViewController: UIViewController {
     }
     
     private func setupUI() {
+        let tapInView = UITapGestureRecognizer(target: self, action: #selector(tappedInController))
+        tapInView.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapInView)
+        
         appImage.layer.cornerRadius = 6
         let appName: [NSAttributedString.Key: Any] = [
             .font: UIFont.montserratBold(16),
@@ -63,8 +75,14 @@ class AuthLoginViewController: UIViewController {
         bannerTitleLabel.text = Constants.Localized.titleLoginScreen.apply()
         
         emailTextField.setPlaceholder(Constants.Localized.email.apply())
+        emailTextField.delegate = self
+        emailTextField.textField.keyboardType = .emailAddress
+        emailTextField.textField.addTarget(self, action: #selector(onChangeText), for: .editingChanged)
         passwordTextField.setPlaceholder(Constants.Localized.password.apply())
         passwordTextField.isSecureEntry = true
+        passwordTextField.delegate = self
+        passwordTextField.textField.keyboardType = .default
+        passwordTextField.textField.addTarget(self, action: #selector(onChangeText), for: .editingChanged)
         
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: Constants.IconsName.faceId)
@@ -85,6 +103,49 @@ class AuthLoginViewController: UIViewController {
         infoRegisterLabel.textColor = .black
         infoRegisterLabel.text = "\(Constants.Localized.haveDontRegistered.apply()) \(Constants.Localized.registerHere.apply())"
     }
+    
+    private func setupBindings() {
+        viewModel.$stateButton
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] value in
+                self?.enterButton.setState(value)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$displayLoginSuccess
+            .receive(on: DispatchQueue.main)
+            .sink { success in
+                if success {
+                    print("APP -> El inicio de sesion es correcto")
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$displayErrorLogin
+            .receive(on: DispatchQueue.main)
+            .compactMap { $0 }
+            .sink { [weak self] error in
+                self?.coordinator.presentAlertError(error)
+            }
+            .store(in: &cancellables)
+    }
+    
+    @IBAction func enterTapped(_ sender: Any) {
+        viewModel.initLogin()
+    }
+    
+    @IBAction func enrollFaceIdTapped(_ sender: Any) {}
+    
+    @objc private func tappedInController() {
+        view.endEditing(true)
+    }
+    
+    @objc private func onChangeText() {
+        viewModel.validateFields(
+            email: emailTextField.text ?? "",
+            password: passwordTextField.text ?? ""
+        )
+    }
 
     @objc private func keyboardWillShow(notification: Notification) {
         guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
@@ -101,4 +162,13 @@ class AuthLoginViewController: UIViewController {
         }
     }
     
+}
+
+extension AuthLoginViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == emailTextField.textField && string.contains(" ") {
+            return false
+        }
+        return true
+    }
 }

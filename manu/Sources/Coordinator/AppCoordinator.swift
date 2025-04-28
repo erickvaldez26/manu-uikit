@@ -28,7 +28,7 @@ final class AppCoordinator: Coordinator, AppCoordinatorProtocol {
     }
     
     func goToAuthentication() {
-        let authentication = AuthenticationCoordinator(navigationController: navigationController, parentCoordinator: self)
+        let authentication = AuthenticationCoordinator(navigationController: navigationController, parentCoordinator: self, alertBuilder: MNAlertBuilder())
         self.authenticationCoordinator = authentication
         self.splashCoordinator = nil
         authentication.start()

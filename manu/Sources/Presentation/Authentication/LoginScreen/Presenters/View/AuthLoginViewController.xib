@@ -109,6 +109,9 @@
                                                         <imageReference key="image" image="faceid" catalog="system" symbolScale="large"/>
                                                         <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage"/>
                                                     </buttonConfiguration>
+                                                    <connections>
+                                                        <action selector="enrollFaceIdTapped:" destination="-1" eventType="touchUpInside" id="EKm-eU-Dq3"/>
+                                                    </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="e3H-oi-6sK" customClass="MNButton" customModule="manu" customModuleProvider="target">
                                                     <rect key="frame" x="40" y="0.0" width="287" height="45"/>
@@ -117,6 +120,9 @@
                                                     </constraints>
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                     <state key="normal" title="Button"/>
+                                                    <connections>
+                                                        <action selector="enterTapped:" destination="-1" eventType="touchUpInside" id="k3g-yC-Tec"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                         </stackView>
