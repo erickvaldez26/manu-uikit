@@ -17,4 +17,8 @@ struct Utils {
         let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailFormat)
         return emailPredicate.evaluate(with: email)
     }
+    
+    static func isValidPassword(_ password: String) -> Bool {
+        return password.count >= 8 && password.count <= 12
+    }
 }

@@ -7,22 +7,22 @@
 
 struct RegisterScreenFactory {
     static func createViewController(coordinator: AuthenticationCoordinator) -> AuthRegisterViewController {
-        AuthRegisterViewController(coordinator: coordinator)
+        AuthRegisterViewController(viewModel: createViewModel(), coordinator: coordinator)
     }
     
-//    private static func createViewModel() -> AuthRegisterViewModel {
-//        AuthRegisterViewModel(useCase: createUseCase())
-//    }
-//    
-//    private static func createUseCase() -> RegisterUseCasesImpl {
-//        RegisterUseCasesImpl(repository: createRepository())
-//    }
-//    
-//    private static func createRepository() -> RegisterRepositoryImpl {
-//        RegisterRepositoryImpl(dataSource: createDateSource())
-//    }
-//    
-//    private static func createDateSource() -> RegisterDataSourceImpl {
-//        RegisterDataSourceImpl()
-//    }
+    private static func createViewModel() -> AuthRegisterViewModel {
+        AuthRegisterViewModel(useCase: createUseCase())
+    }
+    
+    private static func createUseCase() -> RegisterUseCasesImpl {
+        RegisterUseCasesImpl(repository: createRepository())
+    }
+    
+    private static func createRepository() -> RegisterRepositoryImpl {
+        RegisterRepositoryImpl(dataSource: createDateSource())
+    }
+    
+    private static func createDateSource() -> RegisterDataSourceImpl {
+        RegisterDataSourceImpl()
+    }
 }
