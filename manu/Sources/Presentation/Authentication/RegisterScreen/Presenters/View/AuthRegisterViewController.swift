@@ -33,10 +33,25 @@ class AuthRegisterViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNotificationCenter()
         setupUI()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    private func setupNotificationCenter() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
     private func setupUI() {
+        let tapInView = UITapGestureRecognizer(target: self, action: #selector(tappedInController))
+        tapInView.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapInView)
+        
         backImageView.tintColor = UIColor.black
         backImageView.isUserInteractionEnabled = true
         let tapBack = UITapGestureRecognizer(target: self, action: #selector(tappedBackPressed))
@@ -52,20 +67,24 @@ class AuthRegisterViewController: UIViewController {
         
         usernameTextField.setPlaceholder(Constants.Localized.name.apply())
         usernameTextField.textField.autocorrectionType = .no
+        usernameTextField.textField.addDoneButton(target: self, action: #selector(doneTapped))
         emailTextField.setPlaceholder(Constants.Localized.email.apply())
         emailTextField.textField.keyboardType = .emailAddress
         emailTextField.textField.autocapitalizationType = .none
         emailTextField.textField.autocorrectionType = .no
+        emailTextField.textField.addDoneButton(target: self, action: #selector(doneTapped))
         passwordTextField.setPlaceholder(Constants.Localized.password.apply())
         passwordTextField.isSecureEntry = true
         passwordTextField.textField.autocapitalizationType = .none
+        passwordTextField.textField.addDoneButton(target: self, action: #selector(doneTapped))
         
         infoView.configure(
-            message: "La contraseña debe tener entre 8 y 12 caracteres, incluir al menos un número y una letra mayúscula. Por favor, verifica tu entrada e inténtalo de nuevo.",
+            message: "La contraseña debe tener entre 8 y 12 caracteres, incluir al menos un número y una letra mayúscula.",
             state: .info
         )
         
         privacyPoliticLabel.font = .montserratRegular(10)
+        privacyPoliticLabel.textColor = .black
         privacyPoliticLabel.text = "\(Constants.Localized.termConditionsPartOne.apply()) \(Constants.Localized.termConditionsPartTwo.apply())"
         
         createAccountButton.setCustomTitle(Constants.Localized.confirm.apply())
@@ -74,6 +93,22 @@ class AuthRegisterViewController: UIViewController {
     
     @objc func tappedBackPressed() {
         coordinator.popupController()
+    }
+  
+    @objc private func tappedInController() {
+        view.endEditing(true)
+    }
+    
+    @objc private func doneTapped() {
+        view.endEditing(true)
+    }
+    
+    @objc private func keyboardWillShow(notification: Notification) {
+        subTitleLabel.hideWithAnimation()
+    }
+
+    @objc private func keyboardWillHide(notification: Notification) {
+        subTitleLabel.showWithAnimation()
     }
 
 }
