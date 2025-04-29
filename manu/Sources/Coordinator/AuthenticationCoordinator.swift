@@ -10,6 +10,7 @@ import UIKit
 protocol AuthenticationCoordinatorProtocol: AnyObject {
     func goToRegister()
     func presentAlertError(_ error: MNRequestError)
+    func popupController()
 }
 
 final class AuthenticationCoordinator: Coordinator, AuthenticationCoordinatorProtocol {
@@ -25,11 +26,12 @@ final class AuthenticationCoordinator: Coordinator, AuthenticationCoordinatorPro
     
     func start() {
         let viewController = LoginScreenFactory.createViewController(coordinator: self)
-        navigationController.setViewControllers([viewController], animated: false)
+        navigationController.setViewControllers([viewController], animated: true)
     }
     
     func goToRegister() {
-        print("APP ->", "Go to register")
+        let viewController = RegisterScreenFactory.createViewController(coordinator: self)
+        navigationController.pushViewController(viewController, animated: true)
     }
     
     func presentAlertError(_ error: MNRequestError) {
@@ -41,5 +43,9 @@ final class AuthenticationCoordinator: Coordinator, AuthenticationCoordinatorPro
             actionMessage: "Entiendo",
             viewController: topViewController
         )
+    }
+    
+    func popupController() {
+        navigationController.popViewController(animated: true)
     }
 }
