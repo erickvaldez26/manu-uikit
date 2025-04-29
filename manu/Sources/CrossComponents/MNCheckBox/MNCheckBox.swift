@@ -8,6 +8,7 @@
 import UIKit
 
 final class MNCheckBox: UIView {
+    public var onToggle: ((Bool) -> Void)?
     public var isChecked: Bool = false {
         didSet {
             updateAppearance()
@@ -69,6 +70,7 @@ final class MNCheckBox: UIView {
     
     @objc private func toggleCheck() {
         isChecked.toggle()
+        onToggle?(isChecked)
     }
     
     private func updateAppearance() {

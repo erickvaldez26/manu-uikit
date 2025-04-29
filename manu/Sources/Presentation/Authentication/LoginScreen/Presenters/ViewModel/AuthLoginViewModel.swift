@@ -38,10 +38,8 @@ class AuthLoginViewModel: ObservableObject {
             self.stateButton = .disabled
             switch result {
             case .success:
-                print("APP -> Se inicio sesion correctamente")
                 self.displayLoginSuccess = true
             case .failure(let error):
-                print("APP -> Fallo el login")
                 self.displayLoginSuccess = false
                 self.displayErrorLogin = error
             }

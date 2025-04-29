@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import Combine
 
 class AuthRegisterViewController: UIViewController {
     
+    private let viewModel: AuthRegisterViewModel
     private let coordinator: AuthenticationCoordinatorProtocol
+    private var cancellables = Set<AnyCancellable>()
     
     @IBOutlet weak var backImageView: UIImageView!
     @IBOutlet weak var titleScreenLabel: UILabel!
@@ -22,7 +25,8 @@ class AuthRegisterViewController: UIViewController {
     @IBOutlet weak var privacyPoliticLabel: UILabel!
     @IBOutlet weak var createAccountButton: MNButton!
     
-    init(coordinator: AuthenticationCoordinatorProtocol) {
+    init(viewModel: AuthRegisterViewModel, coordinator: AuthenticationCoordinatorProtocol) {
+        self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: String(describing: AuthRegisterViewController.self), bundle: nil)
     }
@@ -35,6 +39,7 @@ class AuthRegisterViewController: UIViewController {
         super.viewDidLoad()
         setupNotificationCenter()
         setupUI()
+        setupBindings()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -67,21 +72,31 @@ class AuthRegisterViewController: UIViewController {
         
         usernameTextField.setPlaceholder(Constants.Localized.name.apply())
         usernameTextField.textField.autocorrectionType = .no
+        usernameTextField.delegate = self
         usernameTextField.textField.addDoneButton(target: self, action: #selector(doneTapped))
+        usernameTextField.textField.addTarget(self, action: #selector(onChangeText), for: .editingChanged)
         emailTextField.setPlaceholder(Constants.Localized.email.apply())
         emailTextField.textField.keyboardType = .emailAddress
         emailTextField.textField.autocapitalizationType = .none
         emailTextField.textField.autocorrectionType = .no
+        emailTextField.delegate = self
         emailTextField.textField.addDoneButton(target: self, action: #selector(doneTapped))
+        emailTextField.textField.addTarget(self, action: #selector(onChangeText), for: .editingChanged)
         passwordTextField.setPlaceholder(Constants.Localized.password.apply())
         passwordTextField.isSecureEntry = true
         passwordTextField.textField.autocapitalizationType = .none
         passwordTextField.textField.addDoneButton(target: self, action: #selector(doneTapped))
+        passwordTextField.textField.addTarget(self, action: #selector(onChangeText), for: .editingChanged)
         
         infoView.configure(
             message: "La contraseña debe tener entre 8 y 12 caracteres, incluir al menos un número y una letra mayúscula.",
             state: .info
         )
+        
+        checkButton.onToggle = { [weak self] isChecked in
+            self?.viewModel.isCheckedTermConditions = isChecked
+            self?.onChangeText()
+        }
         
         privacyPoliticLabel.font = .montserratRegular(10)
         privacyPoliticLabel.textColor = .black
@@ -89,6 +104,44 @@ class AuthRegisterViewController: UIViewController {
         
         createAccountButton.setCustomTitle(Constants.Localized.confirm.apply())
         createAccountButton.setState(.disabled)
+    }
+    
+    private func setupBindings() {
+        viewModel.$stateButton
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] value in
+                self?.createAccountButton.setState(value)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$displayRegisterSuccess
+            .receive(on: DispatchQueue.main)
+            .sink { success in
+                if success {
+                    print("APP -> El registro es correcto")
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$displayErrorRegister
+            .receive(on: DispatchQueue.main)
+            .compactMap { $0 }
+            .sink { [weak self] error in
+                self?.coordinator.presentAlertError(error)
+            }
+            .store(in: &cancellables)
+    }
+    
+    @IBAction func registerTapped(_ sender: Any) {
+        viewModel.initRegister()
+    }
+    
+    @objc private func onChangeText() {
+        viewModel.validateFields(
+            name: usernameTextField.text ?? "",
+            email: emailTextField.text ?? "",
+            password: passwordTextField.text ?? ""
+        )
     }
     
     @objc func tappedBackPressed() {
@@ -111,4 +164,13 @@ class AuthRegisterViewController: UIViewController {
         subTitleLabel.showWithAnimation()
     }
 
+}
+
+extension AuthRegisterViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == emailTextField.textField && string.contains(" ") {
+            return false
+        }
+        return true
+    }
 }
