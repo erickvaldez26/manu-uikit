@@ -94,7 +94,7 @@ class AuthRegisterViewController: UIViewController {
     @objc func tappedBackPressed() {
         coordinator.popupController()
     }
-    
+  
     @objc private func tappedInController() {
         view.endEditing(true)
     }
