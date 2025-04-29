@@ -82,6 +82,7 @@ class AuthLoginViewController: UIViewController {
         passwordTextField.isSecureEntry = true
         passwordTextField.delegate = self
         passwordTextField.textField.keyboardType = .default
+        passwordTextField.textField.autocapitalizationType = .none
         passwordTextField.textField.addTarget(self, action: #selector(onChangeText), for: .editingChanged)
         
         var config = UIButton.Configuration.plain()
@@ -101,7 +102,10 @@ class AuthLoginViewController: UIViewController {
         
         infoRegisterLabel.font = .montserratRegular(12)
         infoRegisterLabel.textColor = .black
+        infoRegisterLabel.isUserInteractionEnabled = true
         infoRegisterLabel.text = "\(Constants.Localized.haveDontRegistered.apply()) \(Constants.Localized.registerHere.apply())"
+        let tapRegisterLink = UITapGestureRecognizer(target: self, action: #selector(tappedRegisterLink))
+        infoRegisterLabel.addGestureRecognizer(tapRegisterLink)
     }
     
     private func setupBindings() {
@@ -160,6 +164,10 @@ class AuthLoginViewController: UIViewController {
         if self.view.frame.origin.y != 0 {
             self.view.frame.origin.y = 0
         }
+    }
+    
+    @objc private func tappedRegisterLink() {
+        coordinator.goToRegister()
     }
     
 }
