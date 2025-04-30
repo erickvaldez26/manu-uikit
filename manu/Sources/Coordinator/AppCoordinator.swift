@@ -9,12 +9,14 @@ import UIKit
 
 protocol AppCoordinatorProtocol: AnyObject {
     func goToAuthentication()
+    func goToTabBarController()
 }
 
 final class AppCoordinator: Coordinator, AppCoordinatorProtocol {
     var navigationController: UINavigationController
     private var splashCoordinator: SplashCoordinator?
     private var authenticationCoordinator: AuthenticationCoordinator?
+//    private var mainTabBarCoordinator: MainTabBarCoordinator?
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -32,5 +34,13 @@ final class AppCoordinator: Coordinator, AppCoordinatorProtocol {
         self.authenticationCoordinator = authentication
         self.splashCoordinator = nil
         authentication.start()
+    }
+    
+    func goToTabBarController() {
+        let tabBar = MainTabBarCoordinator(navigationController: navigationController)
+//        self.mainTabBarCoordinator = tabBar
+        self.splashCoordinator = nil
+        self.authenticationCoordinator = nil
+        tabBar.start()
     }
 }
