@@ -35,8 +35,8 @@ class SplashViewController: UIViewController {
     }
     
     private func redirectAfterSplash() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-            self?.coordinator.goToAuthentication()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
+            self?.coordinator.goToTabBarController()
         }
     }
 }

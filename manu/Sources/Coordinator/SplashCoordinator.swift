@@ -9,7 +9,7 @@ import UIKit
 
 protocol SplashCoordinatorProtocol: AnyObject {
     func goToAuthentication()
-    func goToHome()
+    func goToTabBarController()
 }
 
 final class SplashCoordinator: Coordinator, SplashCoordinatorProtocol {
@@ -30,7 +30,7 @@ final class SplashCoordinator: Coordinator, SplashCoordinatorProtocol {
         parentCoordinator.goToAuthentication()
     }
     
-    func goToHome() {
-        print("APP ->", "Go to Home")
+    func goToTabBarController() {
+        parentCoordinator.goToTabBarController()
     }
 }
