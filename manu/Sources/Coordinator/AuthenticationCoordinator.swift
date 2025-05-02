@@ -9,6 +9,7 @@ import UIKit
 
 protocol AuthenticationCoordinatorProtocol: AnyObject {
     func goToRegister()
+    func goToTabBarController()
     func presentAlertError(_ error: MNRequestError)
     func popupController()
 }
@@ -32,6 +33,10 @@ final class AuthenticationCoordinator: Coordinator, AuthenticationCoordinatorPro
     func goToRegister() {
         let viewController = RegisterScreenFactory.createViewController(coordinator: self)
         navigationController.pushViewController(viewController, animated: true)
+    }
+    
+    func goToTabBarController() {
+        parentCoordinator.goToTabBarController()
     }
     
     func presentAlertError(_ error: MNRequestError) {

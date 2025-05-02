@@ -27,16 +27,22 @@ class SplashViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         viewModel.onViewDidLoad()
-        redirectAfterSplash()
+        redirectManager()
     }
     
     private func setupUI() {
         resourceAppImage.layer.cornerRadius = 10
     }
     
-    private func redirectAfterSplash() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
-            self?.coordinator.goToTabBarController()
+    private func redirectManager() {
+        if let isUserAuthenticated = viewModel.isUserAuthenticated {
+            if isUserAuthenticated {
+                coordinator.goToTabBarController()
+            } else {
+                coordinator.goToAuthentication()
+            }
+        } else {
+            coordinator.goToAuthentication()
         }
     }
 }

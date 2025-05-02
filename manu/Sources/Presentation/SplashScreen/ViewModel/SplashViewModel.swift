@@ -6,13 +6,17 @@
 //
 
 import Foundation
+import FirebaseAuth
 
 protocol SplashViewModelProtocol {
+    var isUserAuthenticated: Bool? { get }
     func onViewDidLoad()
 }
 
 final class SplashViewModel: SplashViewModelProtocol {
+    var isUserAuthenticated: Bool?
+    
     func onViewDidLoad() {
-        print("APP ->", "ViewModel did load")
+        isUserAuthenticated = Auth.auth().currentUser != nil
     }
 }
