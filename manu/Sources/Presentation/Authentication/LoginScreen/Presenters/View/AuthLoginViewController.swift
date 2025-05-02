@@ -118,9 +118,9 @@ class AuthLoginViewController: UIViewController {
         
         viewModel.$displayLoginSuccess
             .receive(on: DispatchQueue.main)
-            .sink { success in
+            .sink { [weak self] success in
                 if success {
-                    print("APP -> El inicio de sesion es correcto")
+                    self?.coordinator.goToTabBarController()
                 }
             }
             .store(in: &cancellables)

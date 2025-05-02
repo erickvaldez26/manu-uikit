@@ -17,6 +17,7 @@ final class CalculatorTabCoordinator: Coordinator {
     
     func start() {
         let viewController = CalculatorViewController()
+        navigationController.isNavigationBarHidden = true
         navigationController.setViewControllers([viewController], animated: false)
     }
     

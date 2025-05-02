@@ -17,6 +17,7 @@ final class HomeTabCoordinator: Coordinator {
     
     func start() {
         let viewController = HomeViewController()
+        navigationController.isNavigationBarHidden = true
         navigationController.setViewControllers([viewController], animated: false)
     }
     
