@@ -7,7 +7,9 @@
 
 import UIKit
 
-final class HomeTabCoordinator: Coordinator {
+protocol HomeTabCoordinatorProtocol: AnyObject {}
+
+final class HomeTabCoordinator: Coordinator, HomeTabCoordinatorProtocol {
     
     var navigationController: UINavigationController
     
@@ -16,7 +18,7 @@ final class HomeTabCoordinator: Coordinator {
     }
     
     func start() {
-        let viewController = HomeViewController()
+        let viewController = HomeScreenFactory.createViewController(coordinator: self)
         navigationController.isNavigationBarHidden = true
         navigationController.setViewControllers([viewController], animated: false)
     }

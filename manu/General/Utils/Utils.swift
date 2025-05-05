@@ -6,10 +6,21 @@
 //
 
 import Foundation
+import UIKit
 
 struct Utils {
     static func getAppVersion() -> String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+    }
+    
+    static func setStyleTextButton(text: String) -> NSAttributedString {
+        return NSAttributedString(
+            string: text,
+            attributes: [
+                .font: UIFont.montserratBold(14),
+                .underlineStyle: NSUnderlineStyle.single.rawValue
+            ]
+        )
     }
     
     static func isValidEmail(_ email: String) -> Bool {
