@@ -6,8 +6,13 @@
 //
 
 import UIKit
+import Combine
 
 class HomeViewController: UIViewController {
+    
+    private let viewModel: HomeViewModel
+    private let coordinator: HomeTabCoordinatorProtocol
+    private var cancellables = Set<AnyCancellable>()
 
     @IBOutlet weak var helloLabel: UILabel!
     @IBOutlet weak var welcomeLabel: UILabel!
@@ -28,13 +33,20 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var addDebContentView: UIView!
     @IBOutlet weak var addDebImage: UIImageView!
     @IBOutlet weak var allDebsTable: UICollectionView!
-    @IBOutlet weak var payMonthLabel: UILabel!
+    @IBOutlet weak var addMonthlyPaymentChip: MNChip!
+    @IBOutlet weak var titleMonthlyPaymentLabel: UILabel!
     @IBOutlet weak var amountTotalPayMonthLabel: UILabel!
     @IBOutlet weak var monthlyPaymentsTable: UITableView!
+    @IBOutlet weak var contentEmptyMontlyPaymentView: UIView!
+    @IBOutlet weak var emptyDescriptionLabel: UILabel!
+    @IBOutlet weak var createMonthlyPaymentLabelButton: UILabel!
     
     private let items = Array(1...10).map { "Item \($0)" }
+    private var isObfuscate: Bool = false
     
-    init () {
+    init (viewModel: HomeViewModel, coordinator: HomeTabCoordinatorProtocol) {
+        self.viewModel = viewModel
+        self.coordinator = coordinator
         super.init(nibName: String(describing: HomeViewController.self), bundle: nil)
     }
     
@@ -45,6 +57,9 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        updateObfuscation()
+        setupBinding()
+        viewModel.fetchAllMonthlyPayment()
     }
     
     func setupUI() {
@@ -62,6 +77,9 @@ class HomeViewController: UIViewController {
         
         profileImage.layer.cornerRadius = 20
         profileImage.image = UIImage(named: "resource_app_icon")
+        profileImage.isUserInteractionEnabled = true
+        let tapImageProfile = UITapGestureRecognizer(target: self, action: #selector(tapImageProfile))
+        profileImage.addGestureRecognizer(tapImageProfile)
         
         cardBalanceView.layer.cornerRadius = 18
         cardBalanceView.backgroundColor = .accentGreen
@@ -70,9 +88,11 @@ class HomeViewController: UIViewController {
         balanceLabel.text = "Balance total"
         amountBalanceLabel.font = .montserratBold(22)
         amountBalanceLabel.textColor = .white
-        amountBalanceLabel.text = "S/ 1,256.87"
         obfuscationImage.image = UIImage(systemName: "eye.fill")
         obfuscationImage.tintColor = .white
+        obfuscationImage.isUserInteractionEnabled = true
+        let gestureObfuscation = UITapGestureRecognizer(target: self, action: #selector(toggleObfuscation))
+        obfuscationImage.addGestureRecognizer(gestureObfuscation)
         
         receiveContentView.backgroundColor = .black
         receiveContentView.layer.cornerRadius = 20
@@ -109,9 +129,10 @@ class HomeViewController: UIViewController {
         allDebsTable.delegate = self
         allDebsTable.dataSource = self
         
-        payMonthLabel.font = UIFont.montserratRegular(14)
-        payMonthLabel.textColor = .black
-        payMonthLabel.text = "Pago mensuales"
+        addMonthlyPaymentChip.title = "Crear pago mensual"
+        titleMonthlyPaymentLabel.font = .montserratRegular(14)
+        titleMonthlyPaymentLabel.textColor = .black
+        titleMonthlyPaymentLabel.text = "Pagos mensuales"
         amountTotalPayMonthLabel.font = UIFont.montserratRegular(14)
         amountTotalPayMonthLabel.textColor = .black
         amountTotalPayMonthLabel.text = "S/ 1,876.80"
@@ -123,8 +144,64 @@ class HomeViewController: UIViewController {
         monthlyPaymentsTable.showsVerticalScrollIndicator = false
         monthlyPaymentsTable.delegate = self
         monthlyPaymentsTable.dataSource = self
+        
+        contentEmptyMontlyPaymentView.backgroundColor = .clear
+        emptyDescriptionLabel.font = .montserratLight(13)
+        emptyDescriptionLabel.textColor = .accentLightGray
+        emptyDescriptionLabel.text = "Lleva el control de tus gastos mensuales\n agregando tus pagos frecuentes\n aquí."
+        emptyDescriptionLabel.numberOfLines = .zero
+        
+        
+        createMonthlyPaymentLabelButton.attributedText = Utils.setStyleTextButton(text: "Agregar mi primer pago")
+        createMonthlyPaymentLabelButton.textColor = .black
+        createMonthlyPaymentLabelButton.isUserInteractionEnabled = true
+        let tapCreateMonthlyPayTextButton = UITapGestureRecognizer(target: self, action: #selector(tapCreateMonthlyPaymentLabelButton))
+        createMonthlyPaymentLabelButton.addGestureRecognizer(tapCreateMonthlyPayTextButton)
+    }
+    
+    private func setupBinding() {
+        viewModel.$displayMonthlyPayments
+            .receive(on: DispatchQueue.main)
+            .compactMap({ $0 })
+            .sink { [weak self] success in
+                self?.refreshStateMonthlyPaymentTable()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func updateObfuscation() {
+        amountBalanceLabel.text = isObfuscate ? "********" : "S/ 1,256.87"
+        obfuscationImage.image = UIImage(systemName: isObfuscate ? "eye.fill" : "eye.slash.fill")
+    }
+    
+    private func refreshStateMonthlyPaymentTable() {
+        let sizeList = viewModel.displayMonthlyPayments?.count ?? 0
+        if sizeList > .zero {
+            addMonthlyPaymentChip.isHidden = false
+            titleMonthlyPaymentLabel.isHidden = true
+            contentEmptyMontlyPaymentView.isHidden = true
+            monthlyPaymentsTable.isHidden = false
+            monthlyPaymentsTable.reloadData()
+        } else {
+            addMonthlyPaymentChip.isHidden = true
+            titleMonthlyPaymentLabel.isHidden = false
+            monthlyPaymentsTable.isHidden = true
+            contentEmptyMontlyPaymentView.isHidden = false
+        }
+    }
+    
+    @objc private func tapImageProfile() {
+        viewModel.signOut()
     }
 
+    @objc private func toggleObfuscation() {
+        isObfuscate.toggle()
+        updateObfuscation()
+    }
+    
+    @objc private func tapCreateMonthlyPaymentLabelButton() {
+        print("APP -> Ir a pantalla crear pago mensual")
+    }
 }
 
 extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -144,7 +221,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count
+        return viewModel.displayMonthlyPayments?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
