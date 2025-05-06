@@ -22,6 +22,7 @@ class HomeViewModel: ObservableObject {
         Task { [weak self] in
             guard let self else { return }
             let result = await useCase.getAllMonthlyPayment()
+            Utils.notifyHideLoader()
             switch result {
             case .success(let data):
                 displayMonthlyPayments = data
