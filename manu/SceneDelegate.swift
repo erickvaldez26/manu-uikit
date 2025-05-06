@@ -21,6 +21,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = navController
         window?.makeKeyAndVisible()
+        
+        guard let window = window else { return }
+        MNOverlayManager.shared.configure(with: window)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

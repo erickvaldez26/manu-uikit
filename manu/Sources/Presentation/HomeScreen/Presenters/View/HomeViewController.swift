@@ -56,10 +56,12 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        Utils.notifyShowLoader()
         setupUI()
         updateObfuscation()
         setupBinding()
         viewModel.fetchAllMonthlyPayment()
+        
     }
     
     func setupUI() {
@@ -165,6 +167,14 @@ class HomeViewController: UIViewController {
             .compactMap({ $0 })
             .sink { [weak self] success in
                 self?.refreshStateMonthlyPaymentTable()
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$displayErrorMonthlyPayments
+            .receive(on: DispatchQueue.main)
+            .compactMap({ $0 })
+            .sink { [weak self] error in
+                Utils.notifyShowGenericError()
             }
             .store(in: &cancellables)
     }
