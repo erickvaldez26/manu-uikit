@@ -53,4 +53,17 @@ class MonthlyPaymentCell: UITableViewCell {
         dateForPaymentLabel.text = "28 c/m"
     }
     
+    public func configuration(
+        imageName: String,
+        title: String,
+        subtitle: String,
+        amount: Double,
+        paymentDay: String
+    ) {
+        contentImage.image = UIImage(systemName: imageName)
+        serviceNameLabel.text = title
+        typeServiceLabel.text = subtitle
+        amountToPayLabel.text = "S/ \(amount)"
+        dateForPaymentLabel.text = "\(paymentDay) c/m"
+    }
 }

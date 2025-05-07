@@ -32,6 +32,15 @@ struct Utils {
     static func isValidPassword(_ password: String) -> Bool {
         return password.count >= 8 && password.count <= 12
     }
+    
+    static func formatToCurrency(_ value: Double, locale: Locale = Locale.current) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = locale
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
+    }
 }
 
 extension Utils {

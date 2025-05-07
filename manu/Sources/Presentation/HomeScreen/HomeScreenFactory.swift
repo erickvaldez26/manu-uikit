@@ -11,7 +11,7 @@ struct HomeScreenFactory {
     }
     
     private static func createViewModel() -> HomeViewModel {
-        HomeViewModel(useCase: createUseCase())
+        HomeViewModel(useCase: createUseCase(), storage: createStorageReference())
     }
     
     private static func createUseCase() -> HomeUseCasesProtocol {
@@ -24,5 +24,9 @@ struct HomeScreenFactory {
     
     private static func createDateSource() -> HomeDataSourceProtocol {
         HomeDataSource()
+    }
+    
+    private static func createStorageReference() -> StorageService {
+        UserDefaultsStorage()
     }
 }

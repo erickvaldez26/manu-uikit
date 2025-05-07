@@ -5,8 +5,7 @@
 //  Created by Erick Valdez on 2/05/25.
 //
 
-import FirebaseFirestore
-
 protocol HomeRepositoryProtocol: AnyObject {
+    func getUserData() async -> Result<UserInfoResponseDTO, Error>
     func getAllMonthlyPayment() async -> Result<[MonthlyPaymentResponseDTO], Error>
 }
