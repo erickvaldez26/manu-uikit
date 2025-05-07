@@ -42,7 +42,6 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var createMonthlyPaymentLabelButton: UILabel!
     
     private let items = Array(1...10).map { "Item \($0)" }
-    private var isObfuscate: Bool = false
     
     init (viewModel: HomeViewModel, coordinator: HomeTabCoordinatorProtocol) {
         self.viewModel = viewModel
@@ -58,16 +57,12 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         Utils.notifyShowLoader()
         setupUI()
-        updateObfuscation()
         setupBinding()
-        viewModel.fetchAllMonthlyPayment()
-        
     }
     
     func setupUI() {
         helloLabel.font = UIFont.montserratRegular(20)
         helloLabel.textColor = .accentGray
-        helloLabel.text = "Hola Erick"
         welcomeLabel.font = UIFont.montserratRegular()
         welcomeLabel.textColor = .accentGray
         welcomeLabel.text = "Bienvenido otra vez"
@@ -137,7 +132,6 @@ class HomeViewController: UIViewController {
         titleMonthlyPaymentLabel.text = "Pagos mensuales"
         amountTotalPayMonthLabel.font = UIFont.montserratRegular(14)
         amountTotalPayMonthLabel.textColor = .black
-        amountTotalPayMonthLabel.text = "S/ 1,876.80"
         
         monthlyPaymentsTable.register(UINib(nibName: MonthlyPaymentCell.identifier, bundle: nil), forCellReuseIdentifier: MonthlyPaymentCell.identifier)
         monthlyPaymentsTable.backgroundColor = .clear
@@ -162,6 +156,22 @@ class HomeViewController: UIViewController {
     }
     
     private func setupBinding() {
+        viewModel.$displayUserInfo
+            .receive(on: DispatchQueue.main)
+            .compactMap({ $0 })
+            .sink { [weak self] value in
+                self?.updateUserInfo(name: value.name)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$displayObfuscationBalance
+            .receive(on: DispatchQueue.main)
+            .compactMap({ $0 })
+            .sink { [weak self] value in
+                self?.updateObfuscation(isObfuscate: value)
+            }
+            .store(in: &cancellables)
+        
         viewModel.$displayMonthlyPayments
             .receive(on: DispatchQueue.main)
             .compactMap({ $0 })
@@ -173,14 +183,18 @@ class HomeViewController: UIViewController {
         viewModel.$displayErrorMonthlyPayments
             .receive(on: DispatchQueue.main)
             .compactMap({ $0 })
-            .sink { [weak self] error in
+            .sink { error in
                 Utils.notifyShowGenericError()
             }
             .store(in: &cancellables)
     }
     
-    private func updateObfuscation() {
-        amountBalanceLabel.text = isObfuscate ? "********" : "S/ 1,256.87"
+    private func updateUserInfo(name: String) {
+        helloLabel.text = "Hola \(name)"
+    }
+    
+    private func updateObfuscation(isObfuscate: Bool) {
+        amountBalanceLabel.text = isObfuscate ? "********" : Utils.formatToCurrency(viewModel.displayUserInfo?.totalBalance ?? 0.00)
         obfuscationImage.image = UIImage(systemName: isObfuscate ? "eye.fill" : "eye.slash.fill")
     }
     
@@ -192,11 +206,14 @@ class HomeViewController: UIViewController {
             contentEmptyMontlyPaymentView.isHidden = true
             monthlyPaymentsTable.isHidden = false
             monthlyPaymentsTable.reloadData()
+            amountTotalPayMonthLabel.isHidden = false
+            amountTotalPayMonthLabel.text = "S/ \(viewModel.calculateTotalMonthlyPayment())"
         } else {
             addMonthlyPaymentChip.isHidden = true
             titleMonthlyPaymentLabel.isHidden = false
             monthlyPaymentsTable.isHidden = true
             contentEmptyMontlyPaymentView.isHidden = false
+            amountTotalPayMonthLabel.isHidden = true
         }
     }
     
@@ -205,8 +222,7 @@ class HomeViewController: UIViewController {
     }
 
     @objc private func toggleObfuscation() {
-        isObfuscate.toggle()
-        updateObfuscation()
+        viewModel.toggleObfuscationBalance()
     }
     
     @objc private func tapCreateMonthlyPaymentLabelButton() {
@@ -235,7 +251,17 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: MonthlyPaymentCell.self), for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: MonthlyPaymentCell.self), for: indexPath) as? MonthlyPaymentCell else {
+            return UITableViewCell()
+        }
+        let data = viewModel.displayMonthlyPayments?[indexPath.row]
+        cell.configuration(
+            imageName: data?.imageRef ?? "",
+            title: data?.nameService ?? "",
+            subtitle: data?.typeService ?? "",
+            amount: data?.amount ?? .zero,
+            paymentDay: data?.paymentDate ?? ""
+        )
         return cell
     }
     

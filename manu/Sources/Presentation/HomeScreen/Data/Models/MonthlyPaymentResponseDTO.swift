@@ -10,12 +10,12 @@ import FirebaseFirestore
 
 struct MonthlyPaymentResponseDTO: Codable, Identifiable {
     @DocumentID var id: String?
-    var amount: Double
-    var endDate: Date
-    var imageRef: String
-    var nameService: String
-    var paymentDate: String
-    var quotas: Int
-    var startDate: Date
-    var typeService: String
+    let amount: Double
+    let endDate: Date
+    let imageRef: String
+    let nameService: String
+    let paymentDate: String
+    let quotas: Int
+    let startDate: Date
+    let typeService: String
 }

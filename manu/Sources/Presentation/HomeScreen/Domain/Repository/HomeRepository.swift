@@ -12,6 +12,10 @@ class HomeRepository: HomeRepositoryProtocol {
         self.dataSource = dataSource
     }
     
+    func getUserData() async -> Result<UserInfoResponseDTO, any Error> {
+        return await dataSource.getUserData()
+    }
+    
     func getAllMonthlyPayment() async -> Result<[MonthlyPaymentResponseDTO], any Error> {
         return await dataSource.getAllMonthlyPayment()
     }
