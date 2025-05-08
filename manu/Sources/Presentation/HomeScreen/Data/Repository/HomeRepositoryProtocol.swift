@@ -7,5 +7,6 @@
 
 protocol HomeRepositoryProtocol: AnyObject {
     func getUserData() async -> Result<UserInfoResponseDTO, Error>
+    func getAllLoans() async -> Result<[LoansResponseDTO], Error>
     func getAllMonthlyPayment() async -> Result<[MonthlyPaymentResponseDTO], Error>
 }

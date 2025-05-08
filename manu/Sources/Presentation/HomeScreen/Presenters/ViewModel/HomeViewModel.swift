@@ -13,6 +13,7 @@ class HomeViewModel: ObservableObject {
     private let storage: StorageService
     
     @Published var displayUserInfo: UserInfo?
+    @Published var displayLoans: [Loans]?
     @Published var displayMonthlyPayments: [MonthlyPayment]?
     @Published var displayErrorMonthlyPayments: MNRequestError?
     @Published var displayObfuscationBalance: Bool?
@@ -33,8 +34,22 @@ class HomeViewModel: ObservableObject {
             case .success(let data):
                 displayUserInfo = data
                 displayObfuscationBalance = (try? self.storage.get(AppStorageKey.obfuscationBalance, as: Bool.self)) ?? false
-                fetchAllMonthlyPayment()
+                fetchAllLoans()
             case .failure:
+                Utils.notifyShowGenericError()
+            }
+        }
+    }
+    
+    func fetchAllLoans() {
+        Task { [weak self] in
+            guard let self else { return }
+            let result = await useCase.getAllLoans()
+            switch result {
+            case .success(let data):
+                displayLoans = data
+                fetchAllMonthlyPayment()
+            case .failure(let error):
                 Utils.notifyShowGenericError()
             }
         }
@@ -44,10 +59,10 @@ class HomeViewModel: ObservableObject {
         Task { [weak self] in
             guard let self else { return }
             let result = await useCase.getAllMonthlyPayment()
-            Utils.notifyHideLoader()
             switch result {
             case .success(let data):
                 displayMonthlyPayments = data
+                Utils.notifyHideLoader()
             case .failure(let error):
                 displayErrorMonthlyPayments = error
             }

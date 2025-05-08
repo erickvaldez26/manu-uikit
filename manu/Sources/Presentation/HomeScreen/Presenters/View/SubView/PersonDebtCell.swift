@@ -32,5 +32,9 @@ class PersonDebtCell: UICollectionViewCell {
         nameLabel.textColor = .black
         nameLabel.text = "Jessica"
     }
-
+    
+    public func configuration(_ name: String) {
+        avatarNameLabel.text = Utils.getInitials(from: name)
+        nameLabel.text = name
+    }
 }

@@ -29,6 +29,7 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var transferContentView: UIView!
     @IBOutlet weak var transferImage: UIImageView!
     @IBOutlet weak var transferLabel: UILabel!
+    @IBOutlet weak var leadsContentView: UIView!
     @IBOutlet weak var whoYouOweLabel: UILabel!
     @IBOutlet weak var addDebContentView: UIView!
     @IBOutlet weak var addDebImage: UIImageView!
@@ -40,8 +41,6 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var contentEmptyMontlyPaymentView: UIView!
     @IBOutlet weak var emptyDescriptionLabel: UILabel!
     @IBOutlet weak var createMonthlyPaymentLabelButton: UILabel!
-    
-    private let items = Array(1...10).map { "Item \($0)" }
     
     init (viewModel: HomeViewModel, coordinator: HomeTabCoordinatorProtocol) {
         self.viewModel = viewModel
@@ -105,7 +104,7 @@ class HomeViewController: UIViewController {
         transferImage.tintColor = .white
         transferLabel.font = UIFont.montserratRegular()
         transferLabel.textColor = .white
-        transferLabel.text = "Transferir"
+        transferLabel.text = "Entregar"
         
         whoYouOweLabel.font = UIFont.montserratRegular(14)
         whoYouOweLabel.textColor = .black
@@ -172,6 +171,14 @@ class HomeViewController: UIViewController {
             }
             .store(in: &cancellables)
         
+        viewModel.$displayLoans
+            .receive(on: DispatchQueue.main)
+            .compactMap({ $0 })
+            .sink { [weak self] success in
+                self?.refreshStateLoansCollection()
+            }
+            .store(in: &cancellables)
+        
         viewModel.$displayMonthlyPayments
             .receive(on: DispatchQueue.main)
             .compactMap({ $0 })
@@ -196,6 +203,16 @@ class HomeViewController: UIViewController {
     private func updateObfuscation(isObfuscate: Bool) {
         amountBalanceLabel.text = isObfuscate ? "********" : Utils.formatToCurrency(viewModel.displayUserInfo?.totalBalance ?? 0.00)
         obfuscationImage.image = UIImage(systemName: isObfuscate ? "eye.fill" : "eye.slash.fill")
+    }
+    
+    private func refreshStateLoansCollection() {
+        let sizeList = viewModel.displayLoans?.count ?? 0
+        if sizeList > .zero {
+            leadsContentView.isHidden = false
+            allDebsTable.reloadData()
+        } else {
+            leadsContentView.isHidden = true
+        }
     }
     
     private func refreshStateMonthlyPaymentTable() {
@@ -232,11 +249,15 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return items.count
+        return viewModel.displayLoans?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: PersonDebtCell.self), for: indexPath)
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: PersonDebtCell.self), for: indexPath) as? PersonDebtCell else {
+            return UICollectionViewCell()
+        }
+        let data = viewModel.displayLoans?[indexPath.row]
+        cell.configuration(data?.personName ?? "")
         return cell
     }
     
