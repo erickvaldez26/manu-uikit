@@ -41,6 +41,22 @@ struct Utils {
         formatter.maximumFractionDigits = 2
         return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
     }
+    
+    static func getInitials(from name: String) -> String {
+        let words = name.split(separator: " ")
+        
+        if words.count == 1, let firstWord = words.first {
+            return "\(firstWord.prefix(1))\(firstWord.suffix(1))".uppercased()
+        }
+        
+        if words.count > 1 {
+            let firstInitial = words[0].prefix(1)
+            let secondInitial = words[1].prefix(1)
+            return "\(firstInitial)\(secondInitial)".uppercased()
+        }
+        
+        return ""
+    }
 }
 
 extension Utils {

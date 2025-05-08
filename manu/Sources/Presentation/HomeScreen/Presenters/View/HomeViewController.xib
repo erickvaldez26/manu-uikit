@@ -24,6 +24,7 @@
                 <outlet property="createMonthlyPaymentLabelButton" destination="rcA-p6-M9U" id="YzU-ah-Jcm"/>
                 <outlet property="emptyDescriptionLabel" destination="xGP-hh-LZ9" id="jt5-eu-ADo"/>
                 <outlet property="helloLabel" destination="iDO-iM-YfS" id="Gl4-xH-tyi"/>
+                <outlet property="leadsContentView" destination="8Ms-j5-AiH" id="wf0-ms-be9"/>
                 <outlet property="monthlyPaymentsTable" destination="yAB-Fl-14F" id="00h-0e-rHF"/>
                 <outlet property="notificationContentView" destination="tuj-El-Srl" id="MEr-6u-DJD"/>
                 <outlet property="notificationImage" destination="tWq-EB-wPS" id="Fp9-Z1-jHJ"/>
@@ -377,7 +378,7 @@
             <color red="0.60399997234344482" green="0.70599997043609619" blue="0.6119999885559082" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
         <namedColor name="primaryColor">
-            <color red="0.89000004529953003" green="0.92199999094009399" blue="0.94499999284744263" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.88627450980392153" green="0.92156862745098034" blue="0.94117647058823528" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

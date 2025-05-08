@@ -9,6 +9,7 @@ import FirebaseFirestore
 
 protocol HomeUseCasesProtocol: AnyObject {
     func getUserData() async -> Result<UserInfo, MNRequestError>
+    func getAllLoans() async -> Result<[Loans], MNRequestError>
     func getAllMonthlyPayment() async -> Result<[MonthlyPayment], MNRequestError>
 }
 
@@ -30,6 +31,29 @@ class HomeUseCases: HomeUseCasesProtocol {
                 totalBalance: data.totalBalance
             )
             return .success(user)
+        case .failure(let error):
+            return .failure(MNRequestError(from: error))
+        }
+    }
+    
+    func getAllLoans() async -> Result<[Loans], MNRequestError> {
+        let result = await repository.getAllLoans()
+        
+        switch result {
+        case .success(let data):
+            var dataConvert: [Loans] = []
+            let _ = data.map {
+                let model = Loans(
+                    amount: $0.amount,
+                    date: $0.date,
+                    havePlin: $0.havePlin,
+                    haveYape: $0.haveYape,
+                    personName: $0.personName,
+                    type: $0.type
+                )
+                dataConvert.append(model)
+            }
+            return .success(dataConvert)
         case .failure(let error):
             return .failure(MNRequestError(from: error))
         }
