@@ -1,0 +1,23 @@
+name: Build iOS App MANU
+
+on:
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+  build:
+    name: Build project (Not unitTest)
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: |
+          xcodebuild build \
+            -scheme manu \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 14'
+          working-directory: ./manu
+            
