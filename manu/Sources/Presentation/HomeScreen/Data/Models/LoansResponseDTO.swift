@@ -34,4 +34,15 @@ struct LoansResponseDTO: Codable, Identifiable {
         self.personName = personName
         self.type = type
     }
+    
+    func toDomain() -> Loans {
+        return Loans(
+            amount: self.amount,
+            date: self.date,
+            havePlin: self.havePlin,
+            haveYape: self.haveYape,
+            personName: self.personName,
+            type: self.type
+        )
+    }
 }

@@ -18,4 +18,17 @@ struct MonthlyPaymentResponseDTO: Codable, Identifiable {
     let quotas: Int
     let startDate: Date
     let typeService: String
+    
+    func toDomain() -> MonthlyPayment {
+        return MonthlyPayment(
+            amount: self.amount,
+            endDate: self.endDate,
+            imageRef: self.imageRef,
+            nameService: self.nameService,
+            paymentDate: self.paymentDate,
+            quotas: self.quotas,
+            startDate: self.startDate,
+            typeService: self.typeService
+        )
+    }
 }

@@ -9,5 +9,5 @@ import Combine
 import FirebaseAuth
 
 protocol LoginRepository: AnyObject {
-    func signInWithEmail(email: String, password: String) async -> Result<AuthDataResult?, Error>
+    func signInWithEmail(email: String, password: String) async throws -> AuthDataResult?
 }

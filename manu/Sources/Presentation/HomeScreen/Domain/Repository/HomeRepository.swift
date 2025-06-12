@@ -6,21 +6,26 @@
 //
 
 class HomeRepository: HomeRepositoryProtocol {
+    
     private let dataSource: HomeDataSourceProtocol
     
     init(dataSource: HomeDataSourceProtocol) {
         self.dataSource = dataSource
     }
     
-    func getUserData() async -> Result<UserInfoResponseDTO, any Error> {
-        return await dataSource.getUserData()
+    func getUserData() async throws -> UserInfo {
+        let dto = try await dataSource.getUserData()
+        return dto.toDomain()
     }
     
-    func getAllLoans() async -> Result<[LoansResponseDTO], any Error> {
-        return await dataSource.getAllLoans()
+    func getAllLoans() async throws -> [Loans] {
+        let dtos = try await dataSource.getAllLoans()
+        return dtos.map { $0.toDomain() }
     }
     
-    func getAllMonthlyPayment() async -> Result<[MonthlyPaymentResponseDTO], any Error> {
-        return await dataSource.getAllMonthlyPayment()
+    func getAllMonthlyPayment() async throws -> [MonthlyPayment] {
+        let dtos = try await dataSource.getAllMonthlyPayments()
+        return dtos.map { $0.toDomain() }
     }
+    
 }

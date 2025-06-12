@@ -191,7 +191,7 @@ class HomeViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .compactMap({ $0 })
             .sink { error in
-                Utils.notifyShowGenericError()
+//                Utils.notifyShowGenericError()
             }
             .store(in: &cancellables)
     }

@@ -10,7 +10,7 @@ import Combine
 import FirebaseAuth
 
 protocol LoginUseCases: AnyObject {
-    func signInWithEmail(email: String, password: String) async -> Result<AuthDataResult?, MNRequestError>
+    func signInWithEmail(email: String, password: String) async throws -> AuthDataResult?
 }
 
 class LoginUseCasesImpl: LoginUseCases {
@@ -20,14 +20,7 @@ class LoginUseCasesImpl: LoginUseCases {
         self.repository = repository
     }
     
-    func signInWithEmail(email: String, password: String) async -> Result<AuthDataResult?, MNRequestError> {
-        let result = await repository.signInWithEmail(email: email, password: password)
-        
-        switch result {
-        case .success(let data):
-            return .success(data)
-        case .failure(let error):
-            return .failure(MNRequestError(from: error))
-        }
+    func signInWithEmail(email: String, password: String) async throws -> AuthDataResult? {
+        try await repository.signInWithEmail(email: email, password: password)
     }
 }

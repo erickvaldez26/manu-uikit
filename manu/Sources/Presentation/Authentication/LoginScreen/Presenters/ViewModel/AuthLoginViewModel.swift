@@ -34,15 +34,14 @@ class AuthLoginViewModel: ObservableObject {
         stateButton = .loading
         Task { [weak self] in
             guard let self else { return }
-            let result = await useCase.signInWithEmail(email: email, password: password)
-            self.stateButton = .disabled
-            switch result {
-            case .success:
+            do {
+                try await useCase.signInWithEmail(email: email, password: password)
                 self.displayLoginSuccess = true
-            case .failure(let error):
+            } catch {
                 self.displayLoginSuccess = false
-                self.displayErrorLogin = error
+//                self.displayErrorLogin = error
             }
+            self.stateButton = .disabled
         }
     }
 }

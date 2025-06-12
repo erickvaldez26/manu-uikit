@@ -1,0 +1,71 @@
+name: Version Bump Podspec
+
+on:
+  push:
+    branches:
+      - "develop-integration/release-*"
+
+jobs:
+  manage-version:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect merge commit
+        id: merge
+        run: |
+          parent_count=$(git rev-list --parents -n 1 HEAD | wc -w)
+          echo "PARENTS=$parent_count" >> $GITHUB_ENV
+
+      - name: Skip if not a merge commit
+        if: env.PARENTS != '3'
+        run: |
+          echo "Not a merge commit. Exiting."
+          exit 0
+
+      - name: Check if bump already done
+        id: check_bump
+        run: |
+          if git log --oneline | grep -q "chore: HBKBE-0001 update s.version podspec"; then
+            echo "ALREADY_BUMPED=true" >> $GITHUB_ENV
+          else
+            echo "ALREADY_BUMPED=false" >> $GITHUB_ENV
+          fi
+
+      - name: Bump version
+        if: env.ALREADY_BUMPED == 'false'
+        run: |
+          current=$(grep -E "s.version *= *'.+'" YourLib.podspec | sed -E "s/.*'(.*)'.*/\1/")
+          IFS='.' read -r major minor patch <<< "$current"
+          new_minor=$((minor + 1))
+          new="${major}.${new_minor}.0"
+          sed -i '' "s/\(s.version *= *\)'.*'/\1'$new'/" YourLib.podspec
+          git config user.name "erickvaldez26"
+          git config user.email "zapata26erick@hotmail.com"
+          git add YourLib.podspec
+          git commit -m "chore: HBKBE-0001 update s.version podspec"
+          git push
+
+      - name: Check for revert commit
+        id: revert
+        run: |
+          if git log -1 --pretty=%B | grep -q '^Revert'; then
+            echo "IS_REVERT=true" >> $GITHUB_ENV
+          else
+            echo "IS_REVERT=false" >> $GITHUB_ENV
+          fi
+
+      - name: Revert version bump
+        if: env.IS_REVERT == 'true'
+        run: |
+          current=$(grep -E "s.version *= *'.+'" YourLib.podspec | sed -E "s/.*'(.*)'.*/\1/")
+          IFS='.' read -r maj min pat <<< "$current"
+          prev_minor=$((min - 1))
+          prev="${maj}.${prev_minor}.0"
+          sed -i '' "s/\(s.version *= *\)'.*'/\1'$prev'/" YourLib.podspec
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add YourLib.podspec
+          git commit -m "chore: HBKBE-0001 revert s.version podspec"
+          git push

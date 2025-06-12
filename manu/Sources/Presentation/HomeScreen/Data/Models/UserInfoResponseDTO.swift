@@ -20,4 +20,8 @@ struct UserInfoResponseDTO: Codable, Identifiable {
         self.name = name
         self.totalBalance = totalBalance
     }
+    
+    func toDomain() -> UserInfo {
+        return UserInfo(email: self.email, name: self.name, totalBalance: self.totalBalance)
+    }
 }

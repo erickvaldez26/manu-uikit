@@ -74,29 +74,29 @@ extension Utils {
         )
     }
     
-    static func notifyShowGenericError() {
-        NotificationCenter.default.post(
-            name: .showGlobalOverlay,
-            object: nil,
-            userInfo: [
-                "message": "Algo no salió como esperábamos. Estamos trabajando para solucionarlo. Por favor, intenta nuevamente en unos momentos.",
-                "state": MNOverlayFSView.OverlayState.serverError,
-                "primaryTextButton": "Entiendo"
-            ]
-        )
-    }
-    
-    static func notifyShowNetworkError() {
-        NotificationCenter.default.post(
-            name: .showGlobalOverlay,
-            object: nil,
-            userInfo: [
-                "message": "Parece que no tienes conexión a internet. Por favor, revisa tu red e inténtalo nuevamente cuando estés conectado.",
-                "state": MNOverlayFSView.OverlayState.networkError,
-                "primaryTextButton": "Abrir configuración"
-            ]
-        )
-    }
+//    static func notifyShowGenericError() {
+//        NotificationCenter.default.post(
+//            name: .showGlobalOverlay,
+//            object: nil,
+//            userInfo: [
+//                "message": "Algo no salió como esperábamos. Estamos trabajando para solucionarlo. Por favor, intenta nuevamente en unos momentos.",
+//                "state": MNOverlayFSView.OverlayState.serverError,
+//                "primaryTextButton": "Entiendo"
+//            ]
+//        )
+//    }
+//    
+//    static func notifyShowNetworkError() {
+//        NotificationCenter.default.post(
+//            name: .showGlobalOverlay,
+//            object: nil,
+//            userInfo: [
+//                "message": "Parece que no tienes conexión a internet. Por favor, revisa tu red e inténtalo nuevamente cuando estés conectado.",
+//                "state": MNOverlayFSView.OverlayState.networkError,
+//                "primaryTextButton": "Abrir configuración"
+//            ]
+//        )
+//    }
     
     static func notifyHideOverlay() {
         NotificationCenter.default.post(

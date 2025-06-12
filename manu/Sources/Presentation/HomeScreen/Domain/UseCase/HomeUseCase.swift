@@ -8,79 +8,29 @@
 import FirebaseFirestore
 
 protocol HomeUseCasesProtocol: AnyObject {
-    func getUserData() async -> Result<UserInfo, MNRequestError>
-    func getAllLoans() async -> Result<[Loans], MNRequestError>
-    func getAllMonthlyPayment() async -> Result<[MonthlyPayment], MNRequestError>
+    func getUserData() async throws -> UserInfo
+    func getAllLoans() async throws -> [Loans]
+    func getAllMonthlyPayment() async throws -> [MonthlyPayment]
 }
 
 class HomeUseCases: HomeUseCasesProtocol {
+    
     private let repository: HomeRepositoryProtocol
     
     init(repository: HomeRepositoryProtocol) {
         self.repository = repository
     }
     
-    func getUserData() async -> Result<UserInfo, MNRequestError> {
-        let result = await repository.getUserData()
-        
-        switch result {
-        case .success(let data):
-            let user = UserInfo(
-                email: data.email,
-                name: data.name,
-                totalBalance: data.totalBalance
-            )
-            return .success(user)
-        case .failure(let error):
-            return .failure(MNRequestError(from: error))
-        }
+    func getUserData() async throws -> UserInfo {
+        try await repository.getUserData()
     }
     
-    func getAllLoans() async -> Result<[Loans], MNRequestError> {
-        let result = await repository.getAllLoans()
-        
-        switch result {
-        case .success(let data):
-            var dataConvert: [Loans] = []
-            let _ = data.map {
-                let model = Loans(
-                    amount: $0.amount,
-                    date: $0.date,
-                    havePlin: $0.havePlin,
-                    haveYape: $0.haveYape,
-                    personName: $0.personName,
-                    type: $0.type
-                )
-                dataConvert.append(model)
-            }
-            return .success(dataConvert)
-        case .failure(let error):
-            return .failure(MNRequestError(from: error))
-        }
+    func getAllLoans() async throws -> [Loans] {
+        try await repository.getAllLoans()
     }
     
-    func getAllMonthlyPayment() async -> Result<[MonthlyPayment], MNRequestError> {
-        let result = await repository.getAllMonthlyPayment()
-        
-        switch result {
-        case .success(let data):
-            var dataConvert: [MonthlyPayment] = []
-            let _ = data.map {
-                let model = MonthlyPayment(
-                    amount: $0.amount,
-                    endDate: $0.endDate,
-                    imageRef: $0.imageRef,
-                    nameService: $0.nameService,
-                    paymentDate: $0.paymentDate,
-                    quotas: $0.quotas,
-                    startDate: $0.startDate,
-                    typeService: $0.typeService
-                )
-                dataConvert.append(model)
-            }
-            return .success(dataConvert)
-        case .failure(let error):
-            return .failure(MNRequestError(from: error))
-        }
+    func getAllMonthlyPayment() async throws -> [MonthlyPayment] {
+        try await repository.getAllMonthlyPayment()
     }
+    
 }

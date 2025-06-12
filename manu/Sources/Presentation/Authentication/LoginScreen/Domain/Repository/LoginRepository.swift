@@ -15,7 +15,7 @@ class LoginRepositoryImpl: LoginRepository {
         self.dataSource = dataSource
     }
     
-    func signInWithEmail(email: String, password: String) async -> Result<AuthDataResult?, Error> {
-        return await dataSource.signInWithEmail(email: email, password: password)
+    func signInWithEmail(email: String, password: String) async throws -> AuthDataResult? {
+        return try await dataSource.signInWithEmail(email: email, password: password)
     }
 }
