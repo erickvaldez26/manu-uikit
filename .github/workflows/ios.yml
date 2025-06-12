@@ -17,13 +17,13 @@ jobs:
         run: |
           xcodebuild \
             -resolvePackageDependencies \
-            -workspace project.xcworkspace \
+            -project manu.xcodeproj \
             -scheme manu
 
       - name: Build for iOS Simulator without signing
         run: |
           xcodebuild clean build \
-            -workspace project.xcworkspace \
+            -project manu.xcodeproj \
             -scheme manu \
             -destination "platform=iOS Simulator,name=iPhone 14" \
             CODE_SIGNING_REQUIRED=NO \
