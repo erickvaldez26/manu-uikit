@@ -2,22 +2,36 @@ name: Build iOS App MANU
 
 on:
   pull_request:
-    branches: [ "develop" ]
+    branches: [ develop ]
 
 jobs:
-  build:
-    name: Build project (Not unitTest)
+  build-simulator:
     runs-on: macos-latest
-
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build
+      - name: Install dependencies (SPM)
         run: |
-          xcodebuild build \
+          xcodebuild \
+            -resolvePackageDependencies \
+            -workspace project.xcworkspace \
+            -scheme manu
+
+      - name: Build for iOS Simulator without signing
+        run: |
+          xcodebuild clean build \
+            -workspace project.xcworkspace \
             -scheme manu \
-            -sdk iphonesimulator \
-            -destination 'platform=iOS Simulator,name=iPhone 14'
-          working-directory: ./manu
-            
+            -destination "platform=iOS Simulator,name=iPhone 14" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+
+      - name: Run tests on Simulator
+        run: |
+          xcodebuild test \
+            -workspace project.xcworkspace \
+            -scheme manu \
+            -destination "platform=iOS Simulator,name=iPhone 14" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
